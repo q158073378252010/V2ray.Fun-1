@@ -6,6 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>V2ray.fun - 运行状态</title>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="/static/css/mdui.min.css">
     <script src="/static/js/mdui.min.js"></script>
 </head>
@@ -31,7 +32,7 @@
 </header>
 
 <div class="mdui-drawer" id="main-drawer">
-    <div class="mdui-list" mdui-collapse="{accordion: true}" style="margin-bottom: 76px;">
+    <div class="mdui-list" mdui-collapse="{accordion: true}">
         <div class="mdui-collapse-item mdui-collapse-item-open">
             <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
                 <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">near_me</i>
@@ -49,17 +50,15 @@
     </div>
 </div>
 
-<div class="mdui-container doc-container doc-no-cover">
 
     <div class="mdui-container">
         <p></p>
         <div class="mdui-row">
-            <div class="mdui-col-md-12">
                 <div class="mdui-table-fluid">
                 <table class="mdui-table">
                     <thead>
                     <tr>
-                        <th style="min-width: 120px;">参数</th>
+                        <th>参数</th>
                         <th>值</th>
                     </tr>
                     </thead>
@@ -67,26 +66,28 @@
                     <tr>
                         <td>运行状态</td>
                         <td>
-                            <div class="mdui-chip">
+                            <div class="mdui-row">
+                                <div id="start" class="mdui-chip" hidden>
                                 <span class="mdui-chip-icon mdui-color-green"><i class="mdui-icon material-icons">play_arrow</i></span>
                                 <span class="mdui-chip-title">运行中</span>
                             </div>
-                            <div class="mdui-chip">
+                            <div id="stop" class="mdui-chip" hidden>
                                 <span class="mdui-chip-icon mdui-color-red"><i class="mdui-icon material-icons">stop</i></span>
                                 <span class="mdui-chip-title">已停止</span>
+                            </div>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td>服务器IP</td>
-                        <td>114.114.114.114</td>
+                        <td id="ip"></td>
                     </tr>
                     <tr>
                         <td>UUID</td>
                         <td>
                             <div class="mdui-row">
-                                <div class="mdui-col-md-8">
-                                    <input class="mdui-textfield-input" type="text" readonly="readonly" value="b18d3377-e0bd-49c6-9194-892326c9bbb0" maxlength="10px"/>
+                                <div class="mdui-col-md-11">
+                                    <input id="uuid" class="mdui-textfield-input" type="text" readonly="readonly" value=""/>
                                 </div>
                             </div>
 
@@ -94,71 +95,146 @@
                     </tr>
                     <tr>
                         <td>主端口</td>
-                        <td>1234</td>
+                        <td id="port"></td>
                     </tr>
 
                     <tr>
                         <td>加密方式</td>
-                        <td>aes-256-cfb</td>
+                        <td id="encrypt"></td>
                     </tr>
                     <tr>
                         <td>传输方式</td>
-                        <td>mkcp伪装FaceTime流量</td>
+                        <td id="trans"></td>
                     </tr>
                     <tr>
                         <td>TLS</td>
-                        <td><i class="mdui-icon material-icons mdui-text-color-green">check</i>ON
-                            <i class="mdui-icon material-icons mdui-text-color-red">clear</i>Off
+                        <td>
+                            <div class="mdui-row">
+                                <div hidden id="tls_on">
+                                <i class="mdui-icon material-icons mdui-text-color-green">check</i>ON
+                            </div>
+
+                            <div hidden id="tls_off">
+                                <i class="mdui-icon material-icons mdui-text-color-red">clear</i>Off
+                            </div>
+                            </div>
+
                         </td>
                     </tr>
                     <tr>
                         <td>Mux.cool</td>
-                        <td><i class="mdui-icon material-icons mdui-text-color-green">check</i>ON
-                            <i class="mdui-icon material-icons mdui-text-color-red">clear</i>Off
+                        <td>
+                            <div class="mdui-row">
+                                <div hidden id="mux_on">
+                                <i class="mdui-icon material-icons mdui-text-color-green">check</i>ON
+
+                            </div>
+                            <div hidden id="mux_off">
+                                <i class="mdui-icon material-icons mdui-text-color-red">clear</i>Off
+                            </div>
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                                <label class="mdui-textfield-label">Vmess：</label>
-                                <textarea class="mdui-textfield-input" rows="6">vmess://TG9yZW0gSXBzdW0gaXMgc2ltcGx5IGR1bW15IHRleHQgb2YgdGhlIHByaW50aW5nIGFuZCB0eXBlc2V0dGluZyBpbmR1c3RyeS4gTG9yZW0gSXBzdW0gaGFzIGJlZW4gdGhlIGluZHVzdHJ5J3Mgc3RhbmRhcmQgZHVtbXkgdGV4dCBldmVyIHNpbmNlIHRoZSAxNTAwcywgd2hlbiBhbiB1bmtub3duIHByaW50ZXIgdG9vayBhIGdhbGxleSBvZiB0eXBlIGFuZCBzY3JhbWJsZWQgaXQgdG8gbWFrZSBhIHR5cGUgc3BlY2ltZW4gYm9vay4gSXQgaGFzI</textarea>
+                            <div class="mdui-row">
+                                    <label class="mdui-textfield-label">Vmess：</label>
+                                    <textarea id="vmess_link" class="mdui-textfield-input" rows="4"></textarea>
+                            </div>
                         </td>
                         <td>
                             <div class="mdui-row">
-                                <div class="mdui-col-md-4">
-                                    <img class="mdui-img-rounded" src="https://pan.baidu.com/share/qrcode?w=150&h=150&url=1242374290gSXBzdW0gaXMgc2ltcGx5IGR1bW15IHRleHQgb2YgdGhlIHByaW50a0gSXBzdW0gaXMgc2ltcGx5IGR1bW15IHRleHQgb2YgdGhlIHByaW50a87489234hjk23b42jk331323123"/>
-                                </div>
-                                <div class="mdui-col-md-8">
-                                    <br>
-                                    <button class="mdui-btn mdui-btn-block mdui-color-theme-500 mdui-ripple">打开Vmess链接</button>
-                                    <br>
-                                    <button class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple">下载配置文件</button>
-
-                                </div>
+                                    <img id="vmess_qr" class="mdui-img-rounded" src=""/>
                             </div>
-
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="mdui-row">
+                                <button onclick="open_vmess()" class="mdui-btn mdui-btn-block mdui-color-theme-500 mdui-ripple">打开Vmess链接</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="mdui-row">
+                                <a href="/static/config.json" download="config" style="text-decoration: none">
+                                <button class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple">下载配置文件</button>
+                                </a>
+                            </div>
                         </td>
                     </tr>
 
                     </tbody>
                 </table>
                 </div>
-            </div>
+
         </div>
     </div>
     <p></p>
 
-</div>
 
-<div class="doc-footer-nav mdui-color-theme">
-    <div class="mdui-container">
-        <div class="mdui-row">
-            <div class="mdui-col-xs-12 mdui-col-sm-12 doc-footer-nav-left">
-                <p class="mdui-text-center">@Function Club</p>
-                <p class="mdui-text-center">2016 - 2018</p>
-            </div>
-        </div>
-    </div>
-</div>
 
 </body>
+<script type="text/javascript">
+    $.get("/get_info", function(return_data){
+        let data = JSON.parse(return_data);
+        if (data["status"] === "on")
+        {
+            document.getElementById('start').removeAttribute('hidden');
+        }
+        else
+        {
+            document.getElementById('stop').removeAttribute('hidden');
+        }
+        document.getElementById('ip').innerHTML = data["ip"];
+        document.getElementById('uuid').value = data["uuid"];
+        document.getElementById('port').innerHTML = data["port"];
+        document.getElementById('encrypt').innerHTML = data["encrypt"];
+        document.getElementById('trans').innerHTML = data["trans"];
+
+        if(data["tls"] === "on")
+        {
+            document.getElementById('tls_on').removeAttribute('hidden');
+        }
+        else
+        {
+            document.getElementById('tls_off').removeAttribute('hidden');
+        }
+
+        if(data["mux"] === "on")
+        {
+            document.getElementById('mux_on').removeAttribute('hidden');
+        }
+        else
+        {
+            document.getElementById('mux_off').removeAttribute('hidden');
+        }
+
+        var raw_vmess_link = data["encrypt"] + ":" + data["uuid"] + "@" + data["ip"] + ":" + data["port"];
+
+        var vmess_link = "vmess://" + btoa(raw_vmess_link) + "?network=";
+
+        if(data["trans"].startsWith("mkcp"))
+        {
+            vmess_link += "kcp";
+        }
+        else if(data["trans"].startsWith("websocket"))
+        {
+            vmess_link += "ws";
+        }
+        else if(data["trans"].startsWith("tcp"))
+        {
+            vmess_link += "tcp";
+        }
+        document.getElementById('vmess_link').innerHTML = vmess_link;
+
+        let vmess_qr_src = "https://pan.baidu.com/share/qrcode?w=150&h=150&url="+vmess_link;
+
+        document.getElementById('vmess_qr').setAttribute('src',vmess_qr_src);
+
+    });
+
+    function open_vmess() {
+        window.window.location.href=document.getElementById('vmess_link').innerHTML
+    }
+</script>
 </html>
